@@ -1,0 +1,20 @@
+# Every key is optional; anything left out keeps its default (captioncheck/config.py).
+# The SHA-256 of the effective settings is stored on every finding.
+
+[sync]
+late_start_s = 0.5        # caption may appear this long after the words start
+early_end_s = 0.5         # caption may leave this long before the words end
+
+[reading]
+max_cps = 17.0            # e.g. children's programming
+
+[placement]
+displays = ["tv-1080p", "phone-large", "tablet"]
+
+# A display of your own. usable_ratio is the share of the width captions may use.
+[displays.tablet]
+width_px = 1024
+usable_ratio = 0.85
+font_px = 28
+max_lines = 2
+about = "a 1024 px tablet in landscape at 28 px type"
