@@ -18,7 +18,8 @@ changes, and what the code already does to make the change mechanical.
 ## Who grades
 
 - Deaf and hard-of-hearing adults who read captions every day, paid for their
-  time. The first reviewer is my stepdad, with his OK.
+  time. The first person I'll ask is my stepdad, and his grades are used only
+  with his OK.
 - Each reviewer names their own reader group in their own words (for example
   "fast" or "steady"). No medical details, no audiograms.
 - Instructions and the one question are offered in ASL as well as English.
@@ -26,9 +27,12 @@ changes, and what the code already does to make the change mechanical.
 ## What they watch
 
 The same public clips the tests use (*Tears of Steel*, CC BY 3.0), sound off
-and captions on, rendered at a display profile under test (`tv-1080p`, then
-`phone-large`). Each clip carries one planted defect at a controlled size,
-made with `captioncheck.plant`, mixed with unmodified controls:
+and captions on, played in an ordinary player at a display profile under test
+(`tv-1080p`, then `phone-large`); captioncheck itself renders no video. Each
+clip carries one planted defect at a controlled size, mixed with unmodified
+controls. `captioncheck.plant` can already make the late starts (`shift`).
+Ending a cue early by a set amount and retiming a cue to a set reading rate
+are two more operations to add before grading starts:
 
 | Check | Sizes graded |
 | --- | --- |

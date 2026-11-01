@@ -86,8 +86,11 @@ class Captions:
     warnings: list[str] = field(default_factory=list)
 
 
-def parse(text: str, source: str = "") -> Captions:
-    """Parse SRT or WebVTT text. Cue numbers are re-indexed from 1 in file order."""
+def parse(text: str, source: str = "", sha256: str | None = None) -> Captions:
+    """Parse SRT or WebVTT text. Cue numbers are re-indexed from 1 in file order.
+
+    sha256 defaults to the hash of the text as UTF-8; load() passes the file's own.
+    """
     raw = text.encode("utf-8")
     text = text.lstrip("﻿").replace("\r\n", "\n").replace("\r", "\n")
     cues: list[Cue] = []
@@ -103,12 +106,16 @@ def parse(text: str, source: str = "") -> Captions:
         if end <= start:
             warnings.append(f"cue {len(cues) + 1}: end {end:.3f} is not after start {start:.3f}")
         cues.append(Cue(index=len(cues) + 1, start=start, end=end, lines=body))
-    return Captions(cues=cues, sha256=hashlib.sha256(raw).hexdigest(), source=source, warnings=warnings)
+    return Captions(cues=cues, sha256=sha256 or hashlib.sha256(raw).hexdigest(), source=source,
+                    warnings=warnings)
 
 
 def load(path: str | Path) -> Captions:
+    """Read a caption file. Its sha256 is the hash of the file's bytes, byte-order mark and all,
+    so `sha256sum` on the file gives the hash a finding carries."""
     p = Path(path)
-    return parse(p.read_bytes().decode("utf-8-sig"), source=p.name)
+    raw = p.read_bytes()
+    return parse(raw.decode("utf-8-sig"), source=p.name, sha256=hashlib.sha256(raw).hexdigest())
 
 
 def _stamp(t: float, sep: str) -> str:

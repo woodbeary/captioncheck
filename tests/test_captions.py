@@ -1,7 +1,9 @@
+import hashlib
+
 from captioncheck import captions
 
 
-def test_srt_with_bom_crlf_and_markup():
+def test_srt_with_bom_crlf_and_markup(tmp_path):
     text = "﻿1\r\n00:00:01,000 --> 00:00:02,500\r\n<i>You're</i> a jerk,\r\nThom.\r\n\r\n2\r\n00:00:03,000 --> 00:00:04,000\r\n[door slams]\r\n"
     caps = captions.parse(text)
     assert [(c.start, c.end) for c in caps.cues] == [(1.0, 2.5), (3.0, 4.0)]
@@ -9,6 +11,11 @@ def test_srt_with_bom_crlf_and_markup():
     assert caps.cues[0].text == "You're a jerk, Thom."
     assert caps.cues[0].chars == len("You're a jerk,") + len("Thom.")
     assert len(caps.sha256) == 64
+    path = tmp_path / "bom.srt"
+    path.write_bytes(text.encode("utf-8"))
+    loaded = captions.load(path)
+    assert loaded.sha256 == hashlib.sha256(path.read_bytes()).hexdigest()
+    assert [c.lines for c in loaded.cues] == [c.lines for c in caps.cues]
 
 
 def test_webvtt_header_settings_and_short_timestamps():
