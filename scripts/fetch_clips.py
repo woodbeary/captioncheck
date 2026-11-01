@@ -61,19 +61,25 @@ def main() -> None:
     pins: dict[str, str] = {}
 
     subs = manifest["subtitles"]
-    body = get(subs["url"])
-    check("subtitles", hashlib.sha256(body).hexdigest(), subs["sha256"], args.pin, pins)
-    (dest / subs["file"]).write_bytes(body)
+    have = dest / subs["file"]
+    if args.pin or not have.exists() or hashlib.sha256(have.read_bytes()).hexdigest() != subs["sha256"]:
+        body = get(subs["url"])
+        check("subtitles", hashlib.sha256(body).hexdigest(), subs["sha256"], args.pin, pins)
+        have.write_bytes(body)
 
     for seg in manifest["segments"]:
         for stem, info in manifest["stems"].items():
+            wav = dest / f"{seg['id']}.{stem}.wav"
+            if not args.pin and wav.exists() and audio.load(wav).sha256 == seg["sha256"][f"{stem}_wav"]:
+                print(f"{seg['id']}.{stem}: already here, hash matches")
+                continue
             rng = byte_range(manifest["aiff"], seg["start"], seg["end"])
             raw = get(info["url"], rng)
             check(f"{seg['id']}.{stem}_raw", hashlib.sha256(raw).hexdigest(),
                   seg["sha256"][f"{stem}_raw"], args.pin, pins)
             clip = audio.from_pcm24_stereo_48k(raw, offset=seg["start"])
             check(f"{seg['id']}.{stem}_wav", clip.sha256, seg["sha256"][f"{stem}_wav"], args.pin, pins)
-            audio.write_wav(dest / f"{seg['id']}.{stem}.wav", clip)
+            audio.write_wav(wav, clip)
             print(f"{seg['id']}.{stem}: {len(raw):,} bytes {rng[0]}-{rng[1]} -> {clip.seconds:.1f} s")
 
     if args.pin:

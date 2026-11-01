@@ -1,0 +1,27 @@
+captioncheck
+Copyright (c) 2026 Jacob Lopez. MIT licence (see LICENSE).
+
+Third-party material this repository uses or refers to:
+
+Tears of Steel
+  (CC) Blender Foundation | mango.blender.org
+  Licensed under Creative Commons Attribution 3.0: https://creativecommons.org/licenses/by/3.0/
+  The film's stereo mix, its music-and-effects stem and its official English
+  subtitles are fetched at run time from download.blender.org by
+  scripts/fetch_clips.py and are not included here. The copyright.txt beside
+  them marks the original soundtrack files CC BY-ND 3.0, (C) Joram Letwory;
+  captioncheck only measures that audio and redistributes none of it.
+  tests/fixtures/words/ holds a machine transcript (Whisper small.en) of the
+  film's dialogue, with word timings; it is attributed as above.
+
+Liberation Sans 2.1.5
+  Licensed under the SIL Open Font License, Version 1.1.
+  captioncheck/data/glyphs/liberation-sans-regular.json holds only the glyph
+  advance widths measured from it by scripts/glyph_table.py; no font file is
+  included.
+
+Cited, not included:
+  Netflix English (USA) Timed Text Style Guide: the 20 (adult) and 17
+  (children's) characters-per-second reading speed limits.
+  47 CFR 79.1(j)(2), the FCC's caption quality standards: the names
+  synchronicity, completeness, placement and accuracy.

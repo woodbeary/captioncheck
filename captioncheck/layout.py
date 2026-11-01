@@ -72,7 +72,7 @@ DISPLAYS = {
         about="16:9 video across a 390 px phone held upright, with the reader's caption size turned up to 18 px."),
     "hud-488": Display(
         "hud-488", 488, 0.85, 21, 5,
-        about="A 488 px monochrome glasses display at 21 px, 5 lines: the first display I measured glyphs for."),
+        about="A 488 px monochrome glasses display at 21 px, 5 lines: where I first wrapped captions by glyph width."),
 }
 
 

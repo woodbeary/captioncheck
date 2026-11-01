@@ -1,4 +1,5 @@
 import json
+from importlib import resources
 from pathlib import Path
 
 import pytest
@@ -48,7 +49,7 @@ def test_shipped_table_matches_the_font_it_was_measured_from():
     spec = importlib.util.spec_from_file_location("glyph_table", Path(__file__).parent.parent / "scripts" / "glyph_table.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    shipped = json.loads((Path(__file__).parent.parent / "captioncheck/data/glyphs/liberation-sans-regular.json").read_text())
+    shipped = json.loads(resources.files("captioncheck").joinpath("data/glyphs/liberation-sans-regular.json").read_text())
     fresh = mod.measure(str(FONT), "liberation-sans-regular")
     if fresh["font"]["file_sha256"] != shipped["font"]["file_sha256"]:
         pytest.skip("a different build of Liberation Sans is installed")

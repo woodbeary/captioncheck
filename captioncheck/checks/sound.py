@@ -55,7 +55,7 @@ def unlabelled_sound(ctx: Context) -> list[Finding]:
     where = "the music-and-effects stem" if ctx.me else "the mix, outside speech"
     out = []
     for ev in events:
-        start, end = times[ev[0]] - HOP / 2, times[ev[-1]] + HOP / 2
+        start, end = float(times[ev[0]] - HOP / 2), float(times[ev[-1]] + HOP / 2)
         if end - start < cfg["min_event_s"] or _labelled_near(ctx, start, end, cfg["label_reach_s"]):
             continue
         peak = float(db[ev].max())
@@ -96,17 +96,17 @@ def unmarked_tone(ctx: Context) -> list[Finding]:
             kind = "quieter"
         else:
             continue
-        measured = {"line_dbfs": round(level, 1), "typical_line_dbfs": round(typical, 1),
-                    "delta_db": round(delta, 1)}
+        measured = {"line_dbfs": round(float(level), 1), "typical_line_dbfs": round(typical, 1),
+                    "delta_db": round(float(delta), 1)}
         caveat = ""
         if ctx.me is not None:
             me_level = ctx.me.level_dbfs(s0, s1)
-            measured["me_dbfs"] = round(me_level, 1)
+            measured["me_dbfs"] = round(float(me_level), 1)
             if kind == "louder" and me_level >= level - 6:
                 caveat = " Music and effects are nearly as loud here, so some of that may not be the voice."
         out.append(ctx.finding(
             "accuracy.unmarked_tone", REVIEW, s0, s1,
-            f"This line is {abs(delta):.0f} dB {kind} than this program's typical line, and the caption marks "
+            f"This line is {abs(delta):.1f} dB {kind} than this program's typical line, and the caption marks "
             f"no manner of speaking: \"{cue.text}\". If it is shouted or whispered, a Deaf viewer can't tell. "
             f"A person decides whether it needs a label.{caveat}",
             cue=cue.index, measured=measured))

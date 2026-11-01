@@ -14,6 +14,7 @@ from pathlib import Path
 import pytest
 
 from captioncheck import audio, captions, engine, plant, words
+from captioncheck.config import Config
 from captioncheck.findings import FAIL, REVIEW, write_jsonl
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -62,21 +63,40 @@ def test_clips_and_fixtures_are_the_pinned_audio(seg_id):
     assert transcript.model["revision"] == "d1d751a5f8271d482d14ca55d9e2deeebbae577f"
 
 
+def _by(run, check):
+    return [f for f in run.findings if f.check == check]
+
+
 def test_what_the_readme_reports_on_the_official_subtitles():
     mix, me, reference, transcript = load("bridge")
     bridge = engine.run(reference, mix, transcript, me=me)
-    [fast] = [f for f in bridge.findings if f.check == "synchronicity.reading_rate" and f.cue == 8]
-    assert fast.measured["cps"] == 43.0
-    assert not [f for f in bridge.findings if f.check.startswith("placement.")]
+    assert sorted(f.cue for f in _by(bridge, "synchronicity.reading_rate")) == [2, 4, 5, 8]
+    [fast] = [f for f in _by(bridge, "synchronicity.reading_rate") if f.cue == 8]
+    assert fast.measured["cps"] == 43.0 and fast.measured["seconds"] == 1.0
+    [late11] = _by(bridge, "synchronicity.late_start")
+    assert late11.cue == 11 and late11.measured["offset_s"] == 0.68
+    [card] = _by(bridge, "synchronicity.unmatched_cue")
+    assert card.cue == 9 and card.measured == {"heard": 3, "words": 7}
 
     mix, me, reference, transcript = load("set")
     s = engine.run(reference, mix, transcript, me=me)
-    [late] = [f for f in s.findings if f.check == "synchronicity.late_start" and f.cue == 48]
-    assert late.measured["offset_s"] == 1.16
-    gaps = {f.measured["heard"]: f.disposition for f in s.findings if f.check == "completeness.uncaptioned_speech"}
+    [late] = _by(s, "synchronicity.late_start")
+    assert late.cue == 48 and late.measured["offset_s"] == 1.16
+    gaps = {f.measured["heard"]: f.disposition for f in _by(s, "completeness.uncaptioned_speech")}
     assert gaps == {"Two minutes.": FAIL, "Come on!": REVIEW}
-    assert not [f for f in s.findings if f.check == "accuracy.unmarked_tone"]
+
+    for run in (bridge, s):
+        assert not [f for f in run.findings if f.check.startswith("placement.")]
+        assert not _by(run, "accuracy.unmarked_tone")
+        assert len(_by(run, "accuracy.unlabelled_sound")) == 3
     assert bridge.stats["caption_words_heard"] == 0.886 and s.stats["caption_words_heard"] == 0.811
+
+
+def test_the_loudest_unmarked_line_sits_just_under_the_tone_threshold():
+    mix, me, reference, transcript = load("set")
+    looser = engine.run(reference, mix, transcript, Config({"tone": {"raised_db": 7.5}}), me=me)
+    [f] = _by(looser, "accuracy.unmarked_tone")
+    assert f.cue == 55 and f.measured["delta_db"] == 7.7
 
 
 PLANT_CASES = [(seg_id, p) for seg_id, items in PLANTS["segments"].items() for p in items]
