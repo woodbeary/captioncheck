@@ -1,0 +1,27 @@
+{
+  "schema": "captioncheck.plants/1",
+  "about": "One known defect per planted file, applied to the official English subtitles. 'expect' must appear in the planted run and not in the reference run, overlapping 'within' (program seconds). 'clears' must appear in the reference run and not in the planted run.",
+  "segments": {
+    "bridge": [
+      {"id": "dropped-line", "op": "drop", "cue": 3,
+       "expect": [{"check": "completeness.uncaptioned_speech", "within": [27.0, 30.5]}]},
+      {"id": "late-block", "op": "shift", "cues": [4, 5], "by": 0.8,
+       "expect": [{"check": "synchronicity.late_start", "within": [30.4, 31.7]},
+                  {"check": "synchronicity.late_start", "within": [34.5, 35.4]}]},
+      {"id": "crammed", "op": "merge", "cues": [6, 7],
+       "expect": [{"check": "synchronicity.reading_rate", "within": [37.0, 38.0]},
+                  {"check": "synchronicity.early_end", "within": [38.0, 41.0]}]},
+      {"id": "one-long-line", "op": "join_lines", "cue": 3,
+       "expect": [{"check": "placement.line_width", "display": "phone-large", "within": [27.0, 30.5]},
+                  {"check": "placement.line_width", "display": "tv-1080p", "within": [27.0, 30.5]}]},
+      {"id": "a-person-labels-the-sound", "op": "add_cue", "at": [63.4, 65.1], "text": "[SOUND]",
+       "clears": [{"check": "accuracy.unlabelled_sound", "within": [63.4, 65.1]}]}
+    ],
+    "set": [
+      {"id": "frame-rate", "op": "scale", "factor": 1.0416667, "origin": 339.0,
+       "expect": [{"check": "synchronicity.drift", "within": [339.0, 400.0]}]},
+      {"id": "dropped-line", "op": "drop", "cue": 47,
+       "expect": [{"check": "completeness.uncaptioned_speech", "within": [361.0, 363.0]}]}
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schema": "captioncheck.clips/1",
+  "work": {
+    "title": "Tears of Steel",
+    "credit": "(CC) Blender Foundation | mango.blender.org",
+    "license": "CC BY 3.0 (film); the ToS directory's copyright.txt marks the original soundtrack files CC BY-ND 3.0, (C) Joram Letwory",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "note": "Audio and subtitles are fetched at run time and never committed. captioncheck measures them; it redistributes none of it."
+  },
+  "subtitles": {
+    "url": "https://download.blender.org/demo/movies/ToS/subtitles/TOS-en.srt",
+    "file": "TOS-en.srt",
+    "sha256": "ce9578f6fe098a5821045a38884b229160f9e7ba27890448a92f5be330c6e6fe"
+  },
+  "stems": {
+    "mix": {
+      "url": "https://download.blender.org/demo/movies/ToS/TOS_DVDSTEREOMIX.aif",
+      "role": "full stereo mix: what a viewer hears"
+    },
+    "me": {
+      "url": "https://download.blender.org/demo/movies/ToS/TOS_MUSIC%2BFX_NO_DIALOGUE.aif",
+      "role": "music and effects stem, no dialogue: where non-speech sound lives"
+    }
+  },
+  "aiff": {
+    "pcm_offset": 512,
+    "rate": 48000,
+    "channels": 2,
+    "bits": 24,
+    "frames": 35232000,
+    "verified": "COMM and SSND chunks read 2026-11-01; both stems share this layout"
+  },
+  "segments": [
+    {
+      "id": "bridge",
+      "start": 20.0,
+      "end": 66.0,
+      "about": "the opening argument on the bridge, then the robot lab",
+      "sha256": {
+        "mix_raw": "17c3f0aa8830e738b17301d9538bbb2c4a27d710b80efbf60217becc95b52c8d",
+        "mix_wav": "1cbf7dfd0213d4286c378ea9d535337f86c30e90bd48286ab5b7219818bfd99d",
+        "me_raw": "eda0e41a9f2f352da13f3d261b42442b0564ef994df25241a61c4cdbdd4b3364",
+        "me_wav": "f5e00f5b16c0075a0e405857332b2493069bef43cb13bfd610528a678c79778f"
+      }
+    },
+    {
+      "id": "set",
+      "start": 336.0,
+      "end": 400.0,
+      "about": "the film set under attack: shouting, effects, overlapping lines",
+      "sha256": {
+        "mix_raw": "a85506658c643b661ed88aa662a33af767adb048991d5170cc8c5b16ba2c9fe9",
+        "mix_wav": "f2cd58de485ede45aa101304d38b928f568c1f0496a626e8ce835c6516aa3992",
+        "me_raw": "eb0e7e7998ab4606658de248640af62482d69e526d7b0cd753a6247dec00e5fe",
+        "me_wav": "34956f8662fe2b35219e73140691393b0c4e32590fe15e65c9f6ffde592a2757"
+      }
+    }
+  ]
+}
