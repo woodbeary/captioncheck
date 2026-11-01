@@ -2,6 +2,7 @@
 
   captioncheck check CAPTIONS --audio AUDIO [--words WORDS.json] [--me STEM] [--start S] ...
   captioncheck transcribe AUDIO -o WORDS.json [--model small.en] [--offline]
+  captioncheck calibrate GRADES.csv
   captioncheck displays
 
 Exit status for check: 0 pass, 1 fail, 2 review only, 3 unverified or refused.
@@ -50,6 +51,12 @@ def _transcribe(args: argparse.Namespace) -> int:
     return 0
 
 
+def _calibrate(args: argparse.Namespace) -> int:
+    from .calibrate import load_grades, thresholds
+    print(thresholds(load_grades(args.grades)), end="")
+    return 0
+
+
 def _displays(_: argparse.Namespace) -> int:
     for d in DISPLAYS.values():
         print(f"{d.id:12} {d.width_px} px x {d.usable_ratio:.0%} = {d.usable_px:.0f} px usable, "
@@ -80,6 +87,10 @@ def main(argv: list[str] | None = None) -> int:
     t.add_argument("--model", default="small.en")
     t.add_argument("--offline", action="store_true")
     t.set_defaults(func=_transcribe)
+
+    g = sub.add_parser("calibrate", help="turn a Deaf reviewer's grades into thresholds")
+    g.add_argument("grades")
+    g.set_defaults(func=_calibrate)
 
     d = sub.add_parser("displays", help="list display profiles")
     d.set_defaults(func=_displays)
